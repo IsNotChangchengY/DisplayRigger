@@ -1,0 +1,5 @@
+name: DisplayRigger
+version: '${version}'
+
+main: org.displayRigger.DisplayRigger
+api-version: '1.21'
