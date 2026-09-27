@@ -3,3 +3,15 @@ version: '${version}'
 
 main: org.displayRigger.DisplayRigger
 api-version: '1.21'
+
+
+commands:
+  dr:
+    description: DisplayRigger主命令
+    usage: /dr <子命令>
+    permission: displayrigger.use
+
+permissions:
+  displayrigger.use:
+    description: 使用DisplayRigger命令
+    default: op
