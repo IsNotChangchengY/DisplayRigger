@@ -6,10 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.xml.stream.events.Namespace;
-
 public class EditingStick {
-    private static final NamespacedKey EDITING_STICK_KEY = new NamespacedKey(JavaPlugin.getPlugin(DisplayRigger.class), "editing_stick");
+    public static final NamespacedKey EDITING_STICK_KEY = new NamespacedKey(JavaPlugin.getPlugin(DisplayRigger.class), "editing_stick");
     public static ItemStack generateEditingStick() {
         ItemStack itemStack = new ItemStack(Material.STICK);
         ItemMeta itemMeta = itemStack.getItemMeta();

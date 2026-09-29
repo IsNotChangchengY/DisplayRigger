@@ -40,6 +40,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <outputFile>D:/MinecraftServer/plugins/${project.build.finalName}.jar</outputFile>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
