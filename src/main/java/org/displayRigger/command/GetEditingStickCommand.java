@@ -5,7 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.displayRigger.EditingStick;
+import org.displayRigger.common.EditingStick;
 
 import java.util.List;
 

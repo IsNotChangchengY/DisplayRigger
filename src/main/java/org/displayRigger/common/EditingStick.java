@@ -1,10 +1,11 @@
-package org.displayRigger;
+package org.displayRigger.common;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.displayRigger.DisplayRigger;
 
 public class EditingStick {
     public static final NamespacedKey EDITING_STICK_KEY = new NamespacedKey(JavaPlugin.getPlugin(DisplayRigger.class), "editing_stick");
