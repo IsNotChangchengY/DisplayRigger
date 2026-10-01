@@ -15,7 +15,7 @@ import java.util.UUID;
 public class SelectListener implements Listener {
 
     private final Map<UUID, Long> lastLookUpdate = new HashMap<>();
-    private static final long THROTTLE_MS = 100;
+    private static final long THROTTLE_MS = 200;
 
     @EventHandler
     public void onMoveViewPoint(PlayerMoveEvent event) {
@@ -23,9 +23,8 @@ public class SelectListener implements Listener {
         Location from = event.getFrom();
         Location to = event.getTo();
 
-        if (player.getInventory().getItemInMainHand().getItemMeta() == null || !player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(EditingStick.EDITING_STICK_KEY)) {return;}
-
-        if (to != null && from.getYaw() == to.getYaw() && from.getPitch() == to.getPitch()) {
+        if (player.getInventory().getItemInMainHand().getItemMeta() == null || !player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(EditingStick.EDITING_STICK_KEY)) {
+            SelectDetect.loseFocus();
             return;
         }
 
@@ -37,6 +36,6 @@ public class SelectListener implements Listener {
         }
         lastLookUpdate.put(uniqueId,now);
 
-        SelectDetect.detectSelect(event);
+        SelectDetect.focus(event);
     }
 }

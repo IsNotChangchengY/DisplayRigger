@@ -1,6 +1,7 @@
 package org.displayRigger.common;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -10,19 +11,37 @@ import org.bukkit.util.Vector;
 
 public class SelectDetect {
     private static final double maxDistance = 5;
-    private static final double raySize = 0.3;
+    private static final double raySize = 0.1;
+    private static Display focusedDisplay;
 
-    public static void detectSelect(PlayerMoveEvent event) {//TODO:待添加检测逻辑
+
+
+    public static void focus(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();
 
         RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, direction, maxDistance, raySize, entity -> entity != player);
-        if (rayTraceResult == null) {return;}
+        if (rayTraceResult == null) {
+            loseFocus();
+            return;
+        }
         Entity hitEntity = rayTraceResult.getHitEntity();
         if (!(hitEntity instanceof Display display)) {return;}
-        player.sendMessage(display.toString());
+        if(display == focusedDisplay) {return;}
+        loseFocus();
         display.setGlowing(true);
-        display.setBrightness(new Display.Brightness(15,15));
+        focusedDisplay = display;
+        player.playSound(eyeLocation, Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+    }
+
+    public static void loseFocus() {
+        if(focusedDisplay == null) {return;}
+        focusedDisplay.setGlowing(false);
+        focusedDisplay = null;
+}
+
+    public static Display getFocusedDisplay() {
+        return focusedDisplay;
     }
 }
