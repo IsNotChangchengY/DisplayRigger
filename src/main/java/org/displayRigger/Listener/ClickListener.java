@@ -22,7 +22,7 @@ public class ClickListener implements Listener {
             return;
         }
         SelectDetect.setSelectState(false);
-        AddObject.objectAddInit(SelectDetect.getFocusedDisplay());
+        AddObject.objectAddInit(SelectDetect.getFocusedDisplay(),event.getPlayer());
         SelectDetect.loseFocus();
         event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING,1,1);
     }

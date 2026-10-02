@@ -10,7 +10,9 @@ import java.util.Map;
 public class DrCommand implements TabExecutor {
 
     private final Map<String, TabExecutor> subCommands = Map.of(
-        "tool", new GetEditingStickCommand()
+        "tool", new GetEditingStickCommand(),
+        "addgroup", new AddGroupCommand(),
+        "addobject", new AddObjectToCommand()
     );
 
     @Override
