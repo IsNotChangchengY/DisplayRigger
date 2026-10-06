@@ -42,7 +42,7 @@ public class GroupManager {
     }
 
     public static boolean objectExist(String groupID, String objectID) {
-        return yamlConfiguration.isSet(groupID + "." + objectID);
+        return yamlConfiguration.isSet(groupID + "." + objectID);//todo：不跟据名字比对，根据uuid比对
     }
 
     public static boolean addObjectToGroup(String groupID, String objectID, UUID uuid, Player player) {
