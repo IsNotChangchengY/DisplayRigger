@@ -2,6 +2,7 @@ package org.displayRigger.common;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,8 +42,22 @@ public class GroupManager {
         return yamlConfiguration.isSet(groupID);
     }
 
-    public static boolean objectExist(String groupID, String objectID) {
-        return yamlConfiguration.isSet(groupID + "." + objectID);//todo：不跟据名字比对，根据uuid比对
+    public static boolean objectIDExist(String groupID, String objectID) {
+        return (yamlConfiguration.isSet(groupID + "." + objectID));
+    }
+
+    public static boolean objectUuidExist(String groupID, UUID uuid) {
+        ConfigurationSection configurationSection = yamlConfiguration.getConfigurationSection(groupID);
+        if (configurationSection == null) {
+            return false;
+        }
+        for (String key : configurationSection.getKeys(false)) {
+            String storedUuid = configurationSection.getString(key + ".uuid");
+            if (storedUuid != null && uuid.equals(UUID.fromString(storedUuid))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static boolean addObjectToGroup(String groupID, String objectID, UUID uuid, Player player) {
@@ -50,8 +65,12 @@ public class GroupManager {
             player.sendMessage(ChatColor.RED + "该组不存在");
             return false;
         }
-        if (objectExist(groupID, objectID)) {
-            player.sendMessage(ChatColor.RED + "该对象已存在");
+        if (objectIDExist(groupID, objectID)) {
+            player.sendMessage(ChatColor.RED + "已存在同名对象");
+            return false;
+        }
+        if (objectUuidExist(groupID, uuid)) {
+            player.sendMessage(ChatColor.RED + "已存在相同UUID的对象");
             return false;
         }
         yamlConfiguration.set(groupID + "." + objectID + ".uuid", uuid.toString());
@@ -85,7 +104,7 @@ public class GroupManager {
             player.sendMessage(ChatColor.RED + "该组不存在");
             return;
         }
-        if (!objectExist(groupID, objectID)) {
+        if (!objectIDExist(groupID, objectID)) {
             player.sendMessage(ChatColor.RED + "该对象不存在");
             return;
         }
