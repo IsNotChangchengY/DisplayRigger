@@ -9,25 +9,32 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.displayRigger.DisplayRigger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class AddObject {
 
-    private static Display addedDisplay;
+    private static final Map<UUID, Display> addedDisplays = new HashMap<>();
+
+    public static boolean isAdding(UUID playerId) {
+        return addedDisplays.containsKey(playerId);
+    }
 
     public static void objectAddInit(Display display, Player player) {
-        if (addedDisplay != null) {
+        UUID playerId = player.getUniqueId();
+        if (addedDisplays.containsKey(playerId)) {
             player.sendMessage(ChatColor.YELLOW + "请先确认当前添加的对象");
             return;
         }
-        addedDisplay = display;
-        player.sendMessage(ChatColor.WHITE + "当前选择：" + addedDisplay.getUniqueId());
+        addedDisplays.put(playerId, display);
+        player.sendMessage(ChatColor.WHITE + "当前选择：" + display.getUniqueId());
 
-        addedDisplay.setGlowColorOverride(Color.YELLOW);
+        display.setGlowColorOverride(Color.YELLOW);
         new BukkitRunnable() {
             @Override
             public void run() {
-                addedDisplay.setGlowing(true);
+                display.setGlowing(true);
             }
         }.runTaskLater(JavaPlugin.getPlugin(DisplayRigger.class), 10);
         player.sendMessage(ChatColor.YELLOW + "确认添加对象：/dr addobject <groupID> <objectID>");
@@ -35,49 +42,56 @@ public class AddObject {
     }
 
     public static void objectAddConfirm(String groupID, String objectID, Player player) {
-        if (addedDisplay == null) {
+        UUID playerId = player.getUniqueId();
+        Display display = addedDisplays.get(playerId);
+        if (display == null) {
             player.sendMessage(ChatColor.YELLOW + "当前没有选择的对象");
             return;
         }
 
-        UUID uuid = addedDisplay.getUniqueId();
+        UUID uuid = display.getUniqueId();
         if (GroupManager.addObjectToGroup(groupID, objectID, uuid, player)) {
-            addedDisplay.setGlowColorOverride(Color.GREEN);
+            display.setGlowColorOverride(Color.GREEN);
             player.sendMessage(ChatColor.GREEN + "添加成功");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 7);
-            SelectDetect.setSelectState(true);
-            Display currentDisplay = addedDisplay;
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    if (currentDisplay != null && addedDisplay == currentDisplay) {
-                        currentDisplay.setGlowColorOverride(Color.WHITE);
-                        currentDisplay.setGlowing(false);
-                    }
-                    if (addedDisplay == currentDisplay) {
-                        addedDisplay = null;
+                    Display stillAdding = addedDisplays.get(playerId);
+                    if (stillAdding == display) {
+                        display.setGlowColorOverride(Color.WHITE);
+                        display.setGlowing(false);
+                        addedDisplays.remove(playerId);
                     }
                 }
             }.runTaskLater(JavaPlugin.getPlugin(DisplayRigger.class), 40);
         } else {
             player.sendMessage(ChatColor.RED + "添加失败");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 7);
-            addedDisplay.setGlowColorOverride(Color.WHITE);
-            addedDisplay.setGlowing(false);
-            addedDisplay = null;
-            SelectDetect.setSelectState(true);
+            display.setGlowColorOverride(Color.WHITE);
+            display.setGlowing(false);
+            addedDisplays.remove(playerId);
         }
     }
 
     public static void objectAddCancel(Player player) {
-        if (addedDisplay == null) {
+        UUID playerId = player.getUniqueId();
+        Display display = addedDisplays.get(playerId);
+        if (display == null) {
             player.sendMessage(ChatColor.YELLOW + "当前没有选择的对象");
             return;
         }
         player.sendMessage(ChatColor.GREEN + "已取消添加对象");
-        addedDisplay.setGlowColorOverride(Color.WHITE);
-        addedDisplay.setGlowing(false);
-        addedDisplay = null;
-        SelectDetect.setSelectState(true);
+        display.setGlowColorOverride(Color.WHITE);
+        display.setGlowing(false);
+        addedDisplays.remove(playerId);
+    }
+
+    public static void cleanupPlayer(UUID playerId) {
+        Display display = addedDisplays.remove(playerId);
+        if (display != null) {
+            display.setGlowColorOverride(Color.WHITE);
+            display.setGlowing(false);
+        }
     }
 }

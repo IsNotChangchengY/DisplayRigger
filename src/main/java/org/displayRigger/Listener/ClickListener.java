@@ -9,6 +9,8 @@ import org.displayRigger.common.EditingStick;
 import org.displayRigger.common.AddObject;
 import org.displayRigger.common.SelectDetect;
 
+import java.util.UUID;
+
 public class ClickListener implements Listener {
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
@@ -18,12 +20,12 @@ public class ClickListener implements Listener {
         if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta() == null || !event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(EditingStick.EDITING_STICK_KEY)) {
             return;
         }
-        if (SelectDetect.getFocusedDisplay() == null) {
+        UUID playerId = event.getPlayer().getUniqueId();
+        if (SelectDetect.getFocusedDisplay(playerId) == null) {
             return;
         }
-        SelectDetect.setSelectState(false);
-        AddObject.objectAddInit(SelectDetect.getFocusedDisplay(),event.getPlayer());
-        SelectDetect.loseFocus();
+        AddObject.objectAddInit(SelectDetect.getFocusedDisplay(playerId), event.getPlayer());
+        SelectDetect.loseFocus(playerId);
         event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING,1,1);
     }
 }

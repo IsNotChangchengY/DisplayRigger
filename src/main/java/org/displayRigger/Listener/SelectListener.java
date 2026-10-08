@@ -1,11 +1,11 @@
 package org.displayRigger.Listener;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.displayRigger.common.AddObject;
 import org.displayRigger.common.EditingStick;
 import org.displayRigger.common.SelectDetect;
 
@@ -21,11 +21,9 @@ public class SelectListener implements Listener {
     @EventHandler
     public void onMoveViewPoint(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        Location from = event.getFrom();
-        Location to = event.getTo();
 
         if (player.getInventory().getItemInMainHand().getItemMeta() == null || !player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(EditingStick.EDITING_STICK_KEY)) {
-            SelectDetect.loseFocus();
+            SelectDetect.loseFocus(player.getUniqueId());
             return;
         }
 
@@ -37,11 +35,14 @@ public class SelectListener implements Listener {
         }
         lastLookUpdate.put(uniqueId,now);
 
-        SelectDetect.focus(event);
+        SelectDetect.focus(player);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        lastLookUpdate.remove(event.getPlayer().getUniqueId());
+        UUID playerId = event.getPlayer().getUniqueId();
+        lastLookUpdate.remove(playerId);
+        SelectDetect.loseFocus(playerId);
+        AddObject.cleanupPlayer(playerId);
     }
 }
