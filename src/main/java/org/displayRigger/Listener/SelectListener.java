@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.displayRigger.common.EditingStick;
 import org.displayRigger.common.SelectDetect;
 
@@ -37,5 +38,10 @@ public class SelectListener implements Listener {
         lastLookUpdate.put(uniqueId,now);
 
         SelectDetect.focus(event);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        lastLookUpdate.remove(event.getPlayer().getUniqueId());
     }
 }

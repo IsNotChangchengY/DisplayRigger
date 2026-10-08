@@ -21,6 +21,7 @@ public class AddObject {
             return;
         }
         addedDisplay = display;
+        player.sendMessage(ChatColor.WHITE + "当前选择：" + addedDisplay.getUniqueId());
 
         addedDisplay.setGlowColorOverride(Color.YELLOW);
         new BukkitRunnable() {
@@ -29,8 +30,8 @@ public class AddObject {
                 addedDisplay.setGlowing(true);
             }
         }.runTaskLater(JavaPlugin.getPlugin(DisplayRigger.class), 10);
-        player.sendMessage(ChatColor.YELLOW + "通过指令确认添加对象：/dr addobject <groupID> <objectID>");
-        player.sendMessage(ChatColor.YELLOW + "通过指令取消添加对象：/dr cancel");
+        player.sendMessage(ChatColor.YELLOW + "确认添加对象：/dr addobject <groupID> <objectID>");
+        player.sendMessage(ChatColor.YELLOW + "取消添加对象：/dr cancel");
     }
 
     public static void objectAddConfirm(String groupID, String objectID, Player player) {
@@ -45,12 +46,17 @@ public class AddObject {
             player.sendMessage(ChatColor.GREEN + "添加成功");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 7);
             SelectDetect.setSelectState(true);
+            Display currentDisplay = addedDisplay;
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    addedDisplay.setGlowColorOverride(Color.WHITE);
-                    addedDisplay.setGlowing(false);
-                    addedDisplay = null;
+                    if (currentDisplay != null && addedDisplay == currentDisplay) {
+                        currentDisplay.setGlowColorOverride(Color.WHITE);
+                        currentDisplay.setGlowing(false);
+                    }
+                    if (addedDisplay == currentDisplay) {
+                        addedDisplay = null;
+                    }
                 }
             }.runTaskLater(JavaPlugin.getPlugin(DisplayRigger.class), 40);
         } else {

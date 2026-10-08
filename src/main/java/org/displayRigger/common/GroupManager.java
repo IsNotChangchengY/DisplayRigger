@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.displayRigger.DisplayRigger;
 
 import java.io.File;
+import java.util.Set;
 import java.util.UUID;
 
 public class GroupManager {
@@ -117,5 +118,17 @@ public class GroupManager {
             return;
         }
         player.sendMessage(ChatColor.GREEN + "对象" + objectID + "已删除");
+    }
+
+    public static Set<String> getGroups() {
+        return yamlConfiguration.getKeys(false);
+    }
+
+    public static Set<String> getObjects(String groupID) {
+        ConfigurationSection configurationSection = yamlConfiguration.getConfigurationSection(groupID);
+        if (configurationSection == null) {
+            return Set.of();
+        }
+        return configurationSection.getKeys(false);
     }
 }

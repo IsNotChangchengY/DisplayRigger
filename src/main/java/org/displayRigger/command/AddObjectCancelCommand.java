@@ -11,7 +11,11 @@ import java.util.List;
 public class AddObjectCancelCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        AddObject.objectAddCancel((Player) sender);
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage("§c该命令只能由玩家执行！");
+            return true;
+        }
+        AddObject.objectAddCancel(player);
         return true;
     }
 

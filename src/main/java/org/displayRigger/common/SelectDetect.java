@@ -32,7 +32,10 @@ public class SelectDetect {
             return;
         }
         Entity hitEntity = rayTraceResult.getHitEntity();
-        if (!(hitEntity instanceof Display display)) {return;}
+        if (!(hitEntity instanceof Display display)) {
+            loseFocus();
+            return;
+        }
         if(display == focusedDisplay) {return;}
         loseFocus();
         display.setGlowColorOverride(Color.WHITE);
