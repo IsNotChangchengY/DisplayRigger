@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.displayRigger.Listener.ClickListener;
+import org.displayRigger.Listener.InteractingDisplayListener;
 import org.displayRigger.Listener.SelectListener;
 import org.displayRigger.command.DrCommand;
 import org.displayRigger.common.GroupManager;
@@ -22,6 +23,7 @@ public final class DisplayRigger extends JavaPlugin {
         Objects.requireNonNull(Bukkit.getPluginCommand("dr")).setExecutor(new DrCommand());
         Bukkit.getPluginManager().registerEvents(new SelectListener(), this);
         Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
+        Bukkit.getPluginManager().registerEvents(new InteractingDisplayListener(), this);
 
         Bukkit.getLogger().info(ChatColor.GREEN + "DisplayRigger enabled!");
     }
