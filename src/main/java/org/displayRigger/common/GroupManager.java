@@ -1,5 +1,6 @@
 package org.displayRigger.common;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,6 +10,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.displayRigger.DisplayRigger;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -130,5 +133,32 @@ public class GroupManager {
             return Set.of();
         }
         return configurationSection.getKeys(false);
+    }
+
+    public static List<UUID> getAllObjectsUuids() {
+        List<UUID> uuids = new ArrayList<>();
+        for (String groupID : getGroups()) {
+            for (String objectID : getObjects(groupID)) {
+                String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
+                if (uuidStr != null) {
+                    uuids.add(UUID.fromString(uuidStr));
+                }else {
+                    Bukkit.getLogger().warning(ChatColor.YELLOW + objectID + "没有UUID");
+                }
+            }
+        }
+        return uuids;
+    }
+
+    public static String getGroupByObjectUuid(UUID uuid) {
+        for (String groupID : getGroups()) {
+            for (String objectID : getObjects(groupID)) {
+                String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
+                if (uuidStr != null && uuid.equals(UUID.fromString(uuidStr))) {
+                    return groupID;
+                }
+            }
+        }
+        return null;
     }
 }

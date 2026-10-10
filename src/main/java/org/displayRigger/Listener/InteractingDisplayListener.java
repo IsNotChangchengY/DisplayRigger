@@ -1,5 +1,6 @@
 package org.displayRigger.Listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -8,6 +9,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
+import org.displayRigger.common.DisplayGroupTriggeredEvent;
+import org.displayRigger.common.GroupManager;
+
+import java.util.UUID;
 
 public class InteractingDisplayListener implements Listener {
 
@@ -25,6 +30,11 @@ public class InteractingDisplayListener implements Listener {
         if (!(hitEntity instanceof Display display)) {
             return;
         }
-
+        UUID uuid = display.getUniqueId();
+        if (!GroupManager.getAllObjectsUuids().contains(uuid)) {
+            return;
+        }
+        String groupID = GroupManager.getGroupByObjectUuid(uuid);
+        Bukkit.getPluginManager().callEvent(new DisplayGroupTriggeredEvent(event.getPlayer(),display,groupID));
     }
 }
