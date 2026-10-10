@@ -10,8 +10,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.displayRigger.DisplayRigger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,12 +20,34 @@ public class GroupManager {
 
     private static YamlConfiguration yamlConfiguration;
     private static File file;
+    private static final Map<UUID, String> uuidToGroupCache = new HashMap<>();
 
 
     public static void load() {
         file = new File(JavaPlugin.getPlugin(DisplayRigger.class).getDataFolder(), "data.yml");
         yamlConfiguration = YamlConfiguration.loadConfiguration(file);
 
+        uuidToGroupCache.clear();
+        for (String groupID : getGroups()) {
+            for (String objectID : getObjects(groupID)) {
+                String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
+                if (uuidStr != null) {
+                    uuidToGroupCache.put(UUID.fromString(uuidStr), groupID);
+                }
+            }
+        }
+    }
+
+    private static void saveAsync() {
+        final String data = yamlConfiguration.saveToString();
+        JavaPlugin plugin = JavaPlugin.getPlugin(DisplayRigger.class);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
+                Files.writeString(file.toPath(), data);
+            } catch (Exception e) {
+                Bukkit.getLogger().warning(ChatColor.RED + "数据保存失败: " + e.getMessage());
+            }
+        });
     }
 
     public static void groupAdd(String groupID, CommandSender sender) {
@@ -33,12 +56,7 @@ public class GroupManager {
             return;
         }
         yamlConfiguration.createSection(groupID);
-        try {
-            yamlConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            sender.sendMessage(ChatColor.RED + "添加组失败");
-        }
+        saveAsync();
         sender.sendMessage(ChatColor.GREEN + "组" + groupID + "已添加");
     }
 
@@ -78,12 +96,8 @@ public class GroupManager {
             return false;
         }
         yamlConfiguration.set(groupID + "." + objectID + ".uuid", uuid.toString());
-        try {
-            yamlConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        uuidToGroupCache.put(uuid, groupID);
+        saveAsync();
         return true;
     }
 
@@ -92,14 +106,9 @@ public class GroupManager {
             player.sendMessage(ChatColor.RED + "该组不存在");
             return;
         }
+        uuidToGroupCache.values().removeIf(groupID::equals);
         yamlConfiguration.set(groupID, null);
-        try {
-            yamlConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            player.sendMessage(ChatColor.RED + "删除组失败");
-            return;
-        }
+        saveAsync();
         player.sendMessage(ChatColor.GREEN + "组" + groupID + "已删除");
     }
 
@@ -112,14 +121,12 @@ public class GroupManager {
             player.sendMessage(ChatColor.RED + "该对象不存在");
             return;
         }
-        yamlConfiguration.set(groupID + "." + objectID, null);
-        try {
-            yamlConfiguration.save(file);
-        } catch (Exception e) {
-            e.printStackTrace();
-            player.sendMessage(ChatColor.RED + "删除对象失败");
-            return;
+        String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
+        if (uuidStr != null) {
+            uuidToGroupCache.remove(UUID.fromString(uuidStr));
         }
+        yamlConfiguration.set(groupID + "." + objectID, null);
+        saveAsync();
         player.sendMessage(ChatColor.GREEN + "对象" + objectID + "已删除");
     }
 
@@ -135,30 +142,7 @@ public class GroupManager {
         return configurationSection.getKeys(false);
     }
 
-    public static List<UUID> getAllObjectsUuids() {
-        List<UUID> uuids = new ArrayList<>();
-        for (String groupID : getGroups()) {
-            for (String objectID : getObjects(groupID)) {
-                String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
-                if (uuidStr != null) {
-                    uuids.add(UUID.fromString(uuidStr));
-                }else {
-                    Bukkit.getLogger().warning(ChatColor.YELLOW + objectID + "没有UUID");
-                }
-            }
-        }
-        return uuids;
-    }
-
     public static String getGroupByObjectUuid(UUID uuid) {
-        for (String groupID : getGroups()) {
-            for (String objectID : getObjects(groupID)) {
-                String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
-                if (uuidStr != null && uuid.equals(UUID.fromString(uuidStr))) {
-                    return groupID;
-                }
-            }
-        }
-        return null;
+        return uuidToGroupCache.get(uuid);
     }
 }

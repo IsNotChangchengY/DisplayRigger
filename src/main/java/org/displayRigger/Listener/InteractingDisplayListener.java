@@ -31,10 +31,10 @@ public class InteractingDisplayListener implements Listener {
             return;
         }
         UUID uuid = display.getUniqueId();
-        if (!GroupManager.getAllObjectsUuids().contains(uuid)) {
+        String groupID = GroupManager.getGroupByObjectUuid(uuid);
+        if (groupID == null) {
             return;
         }
-        String groupID = GroupManager.getGroupByObjectUuid(uuid);
         Bukkit.getPluginManager().callEvent(new DisplayGroupTriggeredEvent(event.getPlayer(),display,groupID));
     }
 }

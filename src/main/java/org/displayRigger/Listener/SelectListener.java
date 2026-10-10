@@ -22,17 +22,18 @@ public class SelectListener implements Listener {
     public void onMoveViewPoint(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getInventory().getItemInMainHand().getItemMeta() == null || !player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(EditingStick.EDITING_STICK_KEY)) {
-            SelectDetect.loseFocus(player.getUniqueId());
-            return;
-        }
-
         long now = System.currentTimeMillis();
         UUID uniqueId = player.getUniqueId();
         Long last = lastLookUpdate.get(uniqueId);
         if (last != null && now - last < THROTTLE_MS) {
             return;
         }
+
+        if (player.getInventory().getItemInMainHand().getItemMeta() == null || !player.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().has(EditingStick.EDITING_STICK_KEY)) {
+            SelectDetect.loseFocus(player.getUniqueId());
+            return;
+        }
+
         lastLookUpdate.put(uniqueId,now);
 
         SelectDetect.focus(player);
