@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.util.RayTraceResult;
+import org.displayRigger.common.ConfigManager;
 import org.displayRigger.common.DisplayGroupTriggeredEvent;
 import org.displayRigger.common.GroupManager;
 
@@ -16,13 +17,16 @@ import java.util.UUID;
 
 public class InteractingDisplayListener implements Listener {
 
+    private final double interactionDistance = ConfigManager.getYamlConfiguration().getDouble("interact.distance", 3);
+    private final double interactionRaySize = ConfigManager.getYamlConfiguration().getDouble("interact.ray_size", 0.3);
+
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) {
             return;
         }
         Player player = event.getPlayer();
-        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(player.getEyeLocation(), player.getEyeLocation().getDirection(), 3, 0.3);
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(player.getEyeLocation(), player.getEyeLocation().getDirection(), interactionDistance, interactionRaySize);
         if (rayTraceResult == null) {
             return;
         }

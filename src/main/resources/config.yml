@@ -1,0 +1,9 @@
+# Display interaction parameters
+interact:
+  distance: 3.0
+  ray_size: 0.3
+
+# EditingStick interaction parameters
+select_detect:
+  distance: 5.0
+  ray_size: 0.1

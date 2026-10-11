@@ -14,13 +14,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SelectDetect {
-    private static final double maxDistance = 5;
-    private static final double raySize = 0.1;
+    private static final double maxDistance = ConfigManager.getYamlConfiguration().getDouble("select_detect.distance", 5);
+    private static final double raySize = ConfigManager.getYamlConfiguration().getDouble("select_detect.ray_size", 0.1);
     private static final Map<UUID, Display> focusedDisplays = new HashMap<>();
-
-    public static boolean isSelecting(UUID playerId) {
-        return AddObject.isAdding(playerId);
-    }
 
     public static void focus(Player player) {
         UUID playerId = player.getUniqueId();
