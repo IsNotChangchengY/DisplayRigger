@@ -17,8 +17,8 @@ import java.util.UUID;
 
 public class InteractingDisplayListener implements Listener {
 
-    private final double interactionDistance = ConfigManager.getYamlConfiguration().getDouble("interact.distance", 3);
-    private final double interactionRaySize = ConfigManager.getYamlConfiguration().getDouble("interact.ray_size", 0.3);
+    private static final double interactionDistance = ConfigManager.getYamlConfiguration().getDouble("interact.distance", 3);
+    private static final double interactionRaySize = ConfigManager.getYamlConfiguration().getDouble("interact.ray_size", 0.15);
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
@@ -26,7 +26,7 @@ public class InteractingDisplayListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(player.getEyeLocation(), player.getEyeLocation().getDirection(), interactionDistance, interactionRaySize);
+        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(player.getEyeLocation(), player.getEyeLocation().getDirection(), interactionDistance, interactionRaySize, entity -> entity != player);
         if (rayTraceResult == null) {
             return;
         }
@@ -39,6 +39,6 @@ public class InteractingDisplayListener implements Listener {
         if (groupID == null) {
             return;
         }
-        Bukkit.getPluginManager().callEvent(new DisplayGroupTriggeredEvent(event.getPlayer(),display,groupID));
+        Bukkit.getPluginManager().callEvent(new DisplayGroupTriggeredEvent(event.getPlayer(), display, groupID, event.getAction()));
     }
 }
