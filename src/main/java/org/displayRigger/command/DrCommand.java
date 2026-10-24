@@ -16,7 +16,8 @@ public class DrCommand implements TabExecutor {
             "removegroup", new RemoveGroupCommand(),
             "removeobject", new RemoveObjectFromGroupCommand(),
             "cancel", new AddObjectCancelCommand(),
-            "load", new DataLoadCommand()
+            "load", new DataLoadCommand(),
+            "glowing", new GroupGlowingCommand()
     );
 
     @Override

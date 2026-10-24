@@ -59,7 +59,7 @@ public class AddObject {
                 public void run() {
                     Display stillAdding = addedDisplays.get(playerId);
                     if (stillAdding == display) {
-                        display.setGlowColorOverride(Color.WHITE);
+                        display.setGlowColorOverride(null);
                         display.setGlowing(false);
                         addedDisplays.remove(playerId);
                     }
@@ -68,7 +68,7 @@ public class AddObject {
         } else {
             player.sendMessage(ChatColor.RED + "添加失败");
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 7);
-            display.setGlowColorOverride(Color.WHITE);
+            display.setGlowColorOverride(null);
             display.setGlowing(false);
             addedDisplays.remove(playerId);
         }
@@ -77,21 +77,13 @@ public class AddObject {
     public static void objectAddCancel(Player player) {
         UUID playerId = player.getUniqueId();
         Display display = addedDisplays.get(playerId);
-        if (display == null) {
+        if (!addedDisplays.containsKey(playerId)) {
             player.sendMessage(ChatColor.YELLOW + "当前没有选择的对象");
             return;
         }
         player.sendMessage(ChatColor.GREEN + "已取消添加对象");
-        display.setGlowColorOverride(Color.WHITE);
+        display.setGlowColorOverride(null);
         display.setGlowing(false);
         addedDisplays.remove(playerId);
-    }
-
-    public static void cleanupPlayer(UUID playerId) {
-        Display display = addedDisplays.remove(playerId);
-        if (display != null) {
-            display.setGlowColorOverride(Color.WHITE);
-            display.setGlowing(false);
-        }
     }
 }

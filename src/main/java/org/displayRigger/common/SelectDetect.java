@@ -48,14 +48,11 @@ public class SelectDetect {
 
     public static void loseFocus(UUID playerId) {
         Display display = focusedDisplays.remove(playerId);
-        if (display == null) {
-            return;
-        }
+        display.setGlowColorOverride(null);
         display.setGlowing(false);
     }
 
     public static Display getFocusedDisplay(UUID playerId) {
         return focusedDisplays.get(playerId);
     }
-
-    }
+}

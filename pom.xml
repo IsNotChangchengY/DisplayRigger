@@ -4,12 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org</groupId>
+    <groupId>com.github.displayrigger</groupId>
     <artifactId>DisplayRigger</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>DisplayRigger</name>
+    <description>A Minecraft Spigot plugin that encapsulates Display Entities into components and groups that can be listened.</description>
 
     <properties>
         <java.version>21</java.version>
@@ -40,9 +41,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <outputFile>D:/MinecraftServer/plugins/${project.build.finalName}.jar</outputFile>
-                </configuration>
             </plugin>
         </plugins>
         <resources>

@@ -17,9 +17,13 @@ public class SelectListener implements Listener {
 
     private final Map<UUID, Long> lastLookUpdate = new HashMap<>();
     private static final long THROTTLE_MS = 200;
+    private static boolean selectState = true;
 
     @EventHandler
     public void onMoveViewPoint(PlayerMoveEvent event) {
+        if (!selectState) {
+            return;
+        }
         Player player = event.getPlayer();
 
         long now = System.currentTimeMillis();
@@ -34,7 +38,7 @@ public class SelectListener implements Listener {
             return;
         }
 
-        lastLookUpdate.put(uniqueId,now);
+        lastLookUpdate.put(uniqueId, now);
 
         SelectDetect.focus(player);
     }
@@ -44,6 +48,10 @@ public class SelectListener implements Listener {
         UUID playerId = event.getPlayer().getUniqueId();
         lastLookUpdate.remove(playerId);
         SelectDetect.loseFocus(playerId);
-        AddObject.cleanupPlayer(playerId);
+        AddObject.objectAddCancel(event.getPlayer());
+    }
+
+    public static void setSelectState(boolean flag) {
+        selectState = flag;
     }
 }

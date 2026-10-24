@@ -1,9 +1,9 @@
 name: DisplayRigger
 version: '${version}'
-
+description: A Minecraft Spigot plugin that encapsulates Display Entities into components and groups that can be listened.
+author: Lucen
 main: org.displayRigger.DisplayRigger
 api-version: '1.21'
-
 
 commands:
   dr:
