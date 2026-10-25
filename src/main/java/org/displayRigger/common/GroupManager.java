@@ -153,4 +153,24 @@ public class GroupManager {
         }
         return UUID.fromString(uuidStr);
     }
+
+    public static String getObjectIDByUuid(UUID uuid) {
+        String groupID = getGroupByObjectUuid(uuid);
+        if (groupID == null) {
+            return null;
+        }
+        ConfigurationSection section = yamlConfiguration.getConfigurationSection(groupID);
+        if (section == null) {
+            return null;
+        }
+        for (String objectID : section.getKeys(false)) {
+            String uuidStr = section.getString(objectID + ".uuid");
+            if (uuidStr != null && uuid.equals(UUID.fromString(uuidStr))) {
+                return objectID;
+            }
+        }
+        return null;
+    }
+
+
 }

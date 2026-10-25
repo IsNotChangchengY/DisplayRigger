@@ -26,15 +26,21 @@ public class DisplayGroupTriggeredEvent extends Event {
         return action;
     }
 
+    public String getObjectID() {
+        return objectID;
+    }
+
     private final Player player;
     private final Display display;
     private final String groupID;
+    private final String objectID;
     private final Action action;
 
-    public DisplayGroupTriggeredEvent(Player player, Display display, String groupID, Action action) {
+    public DisplayGroupTriggeredEvent(Player player, Display display, String groupID, String objectID, Action action) {
         this.player = player;
         this.display = display;
         this.groupID = groupID;
+        this.objectID = objectID;
         this.action = action;
     }
 

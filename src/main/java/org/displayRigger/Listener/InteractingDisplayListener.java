@@ -39,6 +39,10 @@ public class InteractingDisplayListener implements Listener {
         if (groupID == null) {
             return;
         }
-        Bukkit.getPluginManager().callEvent(new DisplayGroupTriggeredEvent(event.getPlayer(), display, groupID, event.getAction()));
+        String objectID = GroupManager.getObjectIDByUuid(uuid);
+        if (objectID == null) {
+            return;
+        }
+        Bukkit.getPluginManager().callEvent(new DisplayGroupTriggeredEvent(event.getPlayer(), display, groupID, objectID, event.getAction()));
     }
 }
