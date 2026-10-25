@@ -6,7 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.displayRigger.Listener.ClickListener;
 import org.displayRigger.Listener.InteractingDisplayListener;
 import org.displayRigger.Listener.SelectListener;
-import org.displayRigger.Listener.TestListener;
 import org.displayRigger.command.DrCommand;
 import org.displayRigger.common.ConfigManager;
 import org.displayRigger.common.GroupManager;
@@ -26,7 +25,6 @@ public final class DisplayRigger extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new SelectListener(), this);
         Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new InteractingDisplayListener(), this);
-        Bukkit.getPluginManager().registerEvents(new TestListener(), this);
 
         Bukkit.getLogger().info(ChatColor.GREEN + "DisplayRigger enabled!");
     }

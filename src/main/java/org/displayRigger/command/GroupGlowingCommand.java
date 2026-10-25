@@ -38,7 +38,7 @@ public class GroupGlowingCommand implements TabExecutor {
         if (args.length != 1) {
             return List.of();
         }
-        String input = args[0];
+        String input = args[0].toLowerCase();
         return GroupManager.getGroups().stream()
                 .filter(groupID -> groupID.startsWith(input))
                 .toList();

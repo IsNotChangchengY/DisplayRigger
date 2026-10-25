@@ -9,20 +9,31 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.displayRigger.DisplayRigger;
 import org.displayRigger.Listener.SelectListener;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 public class GroupGlowing {
 
+    private static final Map<String, Set<Display>> activeGlows = new HashMap<>();
+
     public static void setGlowing(String groupID, Player player) {
+        Set<Display> oldDisplays = activeGlows.get(groupID);
+        if (oldDisplays != null) {
+            oldDisplays.forEach(display -> {
+                display.setGlowColorOverride(null);
+                display.setGlowing(false);
+            });
+        }
+
         Set<String> objects = GroupManager.getObjects(groupID);
         Set<Display> displays = new HashSet<>();
         player.performCommand("dr cancel");
         SelectDetect.loseFocus(player.getUniqueId());
         SelectListener.setSelectState(false);
         for (String objectID : objects) {
-            if (Bukkit.getEntity(UUID.fromString(objectID)) instanceof Display display) {
+            if (Bukkit.getEntity(GroupManager.getObjectUuid(groupID, objectID)) instanceof Display display) {
                 displays.add(display);
             }
         }
@@ -31,10 +42,15 @@ public class GroupGlowing {
             display.setGlowing(true);
         });
 
+        activeGlows.put(groupID, displays);
+
         new BukkitRunnable() {
             @Override
             public void run() {
-                cancelGlowing(displays);
+                if (activeGlows.get(groupID) == displays) {
+                    cancelGlowing(displays);
+                    activeGlows.remove(groupID);
+                }
             }
         }.runTaskLater(JavaPlugin.getPlugin(DisplayRigger.class), 20 * 3);
     }

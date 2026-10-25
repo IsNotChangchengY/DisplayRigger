@@ -30,10 +30,10 @@ public class AddObject {
         addedDisplays.put(playerId, display);
         player.sendMessage(ChatColor.WHITE + "当前选择：" + display.getUniqueId());
 
-        display.setGlowColorOverride(Color.YELLOW);
         new BukkitRunnable() {
             @Override
             public void run() {
+                display.setGlowColorOverride(Color.YELLOW);
                 display.setGlowing(true);
             }
         }.runTaskLater(JavaPlugin.getPlugin(DisplayRigger.class), 10);

@@ -145,4 +145,12 @@ public class GroupManager {
     public static String getGroupByObjectUuid(UUID uuid) {
         return uuidToGroupCache.get(uuid);
     }
+
+    public static UUID getObjectUuid(String groupID, String objectID) {
+        String uuidStr = yamlConfiguration.getString(groupID + "." + objectID + ".uuid");
+        if (uuidStr == null) {
+            return null;
+        }
+        return UUID.fromString(uuidStr);
+    }
 }
