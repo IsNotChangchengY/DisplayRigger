@@ -1,6 +1,7 @@
 package org.displayRigger.Listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,7 +27,7 @@ public class InteractingDisplayListener implements Listener {
             return;
         }
         Player player = event.getPlayer();
-        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(player.getEyeLocation(), player.getEyeLocation().getDirection(), interactionDistance, interactionRaySize, entity -> entity != player);
+        RayTraceResult rayTraceResult = player.getWorld().rayTrace(player.getEyeLocation(), player.getEyeLocation().getDirection(), interactionDistance, FluidCollisionMode.NEVER, true, interactionRaySize, entity -> entity != player);
         if (rayTraceResult == null) {
             return;
         }

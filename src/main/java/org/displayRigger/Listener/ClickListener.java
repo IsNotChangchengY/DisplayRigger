@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.displayRigger.common.DisplayGroupTriggeredEvent;
 import org.displayRigger.common.EditingStick;
 import org.displayRigger.common.AddObject;
 import org.displayRigger.common.SelectDetect;
@@ -27,5 +28,10 @@ public class ClickListener implements Listener {
         AddObject.objectAddInit(SelectDetect.getFocusedDisplay(playerId), event.getPlayer());
         SelectDetect.loseFocus(playerId);
         event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING,1,1);
+    }
+
+    @EventHandler
+    public void test(DisplayGroupTriggeredEvent event) {
+        event.getPlayer().sendMessage(event.getGroupID()+event.getObjectID());
     }
 }

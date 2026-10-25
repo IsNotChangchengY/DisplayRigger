@@ -1,6 +1,7 @@
 package org.displayRigger.common;
 
 import org.bukkit.Color;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Display;
@@ -26,7 +27,7 @@ public class SelectDetect {
         Location eyeLocation = player.getEyeLocation();
         Vector direction = eyeLocation.getDirection();
 
-        RayTraceResult rayTraceResult = player.getWorld().rayTraceEntities(eyeLocation, direction, maxDistance, raySize, entity -> entity != player);
+        RayTraceResult rayTraceResult = player.getWorld().rayTrace(eyeLocation, direction, maxDistance, FluidCollisionMode.NEVER, true, raySize, entity -> entity != player);
         if (rayTraceResult == null) {
             loseFocus(playerId);
             return;
